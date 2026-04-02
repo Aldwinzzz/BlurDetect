@@ -1,89 +1,40 @@
 # BlurDetect - Professional Blur Type Detection System
 
-A sophisticated Flask web application that detects and classifies five different types of blur in images using advanced computer vision techniques.
+A sophisticated Flask web application that detects and classifies five different types of blur in images using advanced computer vision techniques and machine learning models.
 
 ## Features
 
-✨ **Advanced Blur Detection**
-- Gaussian Blur Detection
-- Motion Blur Detection  
-- Defocus Blur Detection
-- Lens Blur Detection
-- Sharp Image Classification
+### Core Functionality
+- **5 Blur Type Detection**: Gaussian, Motion, Defocus, Lens, and Sharp image classification
+- **5 Advanced Detection Models**: Each using different computer vision techniques
+- **Model Comparison**: Side-by-side analysis from all 5 models
+- **Confidence Scoring**: Detailed confidence metrics for each detection
 
-🔐 **Secure User Authentication**
-- User registration and login system
-- Email verification for new accounts
-- SHA512 password hashing
+### User Features
+- User registration and email verification
+- Secure SHA256 password hashing
 - Session-based authentication
+- User dashboard with statistics
+- Analysis history with pagination
+- System events logging and tracking
 
-📊 **5 Different Detection Models**
-1. Laplacian Variance + FFT Frequency Analysis (Hybrid) - Primary Model
-2. Sobel Directional Gradient Analysis
-3. FFT Power Spectrum Classification
-4. Blind Deconvolution PSF Estimation
-5. Deep Learning CNN Classifier (TensorFlow/Keras)
+### Technical Stack
+- **Backend**: Flask 3.1.3 (Python)
+- **Database**: PostgreSQL (Supabase)
+- **ORM**: SQLAlchemy 3.1.1
+- **Computer Vision**: OpenCV 4.13.0.92
+- **Scientific Computing**: NumPy 2.4.3, SciPy 1.17.1
+- **Deep Learning**: TensorFlow 2.21.0
+- **Frontend**: Bootstrap 5, HTML5, CSS3, JavaScript
+- **Email**: Flask-Mail 0.9.1 with Gmail SMTP
+- **Authentication**: Flask-Login 0.6.3, itsdangerous 2.1.2
 
-📈 **Comprehensive Dashboard**
-- User statistics and analysis history
-- Blur type distribution visualization
-- Recent uploads tracking
-- Detailed detection results with confidence scores
+## Installation & Setup
 
-📧 **Email Notifications**
-- Email verification on registration
-- Password reset functionality
-- Professional email templates
-
-📝 **System Events Logging**
-- Track all user actions (registration, login, logout)
-- Log all image uploads and analysis
-- Monitor failed login attempts
-- Complete audit trail
-
-🎨 **Professional UI/UX**
-- Modern Bootstrap 5 design
-- Responsive across all devices
-- Drag-and-drop file upload
-- Real-time analysis progress
-- Interactive data visualization
-
-## Project Structure
-
-```
-blurdetect/
-├── app.py                  # Main Flask application
-├── models.py              # SQLAlchemy database models
-├── blur_models.py         # 5 blur detection algorithms
-├── auth_utils.py          # Authentication utilities
-├── email_utils.py         # Email sending functionality
-├── routes_auth.py         # Authentication routes
-├── routes_detection.py    # Image detection routes
-├── routes_dashboard.py    # Dashboard routes
-├── requirements.txt       # Python dependencies
-├── .env                   # Environment configuration
-├── templates/             # HTML templates
-│   ├── base.html         # Base template with navigation
-│   ├── login.html        # Login page
-│   ├── register.html     # Registration page
-│   ├── dashboard.html    # User dashboard
-│   ├── upload.html       # Image upload page
-│   ├── results.html      # Detection results page
-│   ├── history.html      # Analysis history page
-│   ├── events.html       # User events page
-│   ├── profile.html      # User profile page
-│   ├── system_events.html # System events log
-│   ├── 404.html          # 404 error page
-│   └── 500.html          # 500 error page
-├── uploads/              # User uploaded images directory
-└── static/               # Static files directory
-```
-
-## Installation
-
-### Prerequisites
-- Python 3.8+
-- pip or conda
+### Requirements
+- Python 3.9+
+- PostgreSQL (Supabase instance)
+- pip package manager
 
 ### Step 1: Clone Repository
 ```bash
@@ -103,28 +54,19 @@ pip install -r requirements.txt
 ```
 
 ### Step 4: Configure Environment
-Edit `.env` file with your settings:
+Edit `.env` file with your Supabase credentials:
 ```
+DATABASE_URL=postgresql://postgres:AldwinJohn231@db.vgstezkqpcqcoqbznzvg.supabase.co:5432/postgres
+MAIL_USERNAME=Mail
+MAIL_PASSWORD=krvfmfxbtdopqjxj
+SECRET_KEY=AldwinJohn231
 FLASK_APP=app.py
 FLASK_ENV=development
-SECRET_KEY=your-secret-key-here
-DATABASE_URL=sqlite:///blurdetect.db
-MAIL_SERVER=smtp.gmail.com
-MAIL_PORT=587
-MAIL_USE_TLS=True
-MAIL_USERNAME=your-email@gmail.com
-MAIL_PASSWORD=your-app-password
-UPLOAD_FOLDER=uploads
-MAX_CONTENT_LENGTH=16777216
 ```
 
 ### Step 5: Initialize Database
 ```bash
-python
->>> from app import app, db
->>> with app.app_context():
-...     db.create_all()
->>> exit()
+python init_db.py
 ```
 
 ### Step 6: Run Application
@@ -134,213 +76,86 @@ python app.py
 
 Visit `http://localhost:5000` in your browser.
 
-## Usage
+## Usage Guide
 
-### Registration & Login
-1. Click "Register" to create a new account
+### Registration
+1. Click "Register" on the login page
 2. Enter username, email, and password
-3. Verify your email via the confirmation link
-4. Login with your credentials
+3. Check your email for verification link
+4. Click the verification link to activate account
 
 ### Uploading Images
-1. Click "Upload" in the dashboard
-2. Drag and drop an image or click to browse
-3. Click "Analyze Image" to process
+1. Log in to your account
+2. Navigate to "Upload" page
+3. Drag and drop an image or click to browse
+4. Supported formats: PNG, JPG, JPEG, GIF, BMP, WebP
+5. Maximum file size: 16 MB
 
 ### Viewing Results
-- See the primary blur type with confidence score
-- Review explanations for detected blur types
-- Compare results from all 5 detection models
-- View processing time for each model
+1. After upload, the system runs all 5 models
+2. Primary result (Model 1) is displayed prominently
+3. View confidence score and explanation
+4. Compare all 5 models side-by-side
 
-### Tracking History
-- Access "History" to view all previous analyses
-- Filter by blur type
-- Re-analyze previous images
+## Detection Models
 
-### System Events
-- Track your account activities
-- View login/logout events
-- Monitor image uploads and detections
+### Model 1 — Hybrid Laplacian + FFT (Primary) ⭐
+Combines spatial and frequency domain analysis for fast, accurate detection.
 
-## Blur Detection Models
+### Model 2 — Sobel Directional Gradient
+Analyzes gradient directions to detect motion blur patterns.
 
-### Model 1: Laplacian + FFT Hybrid (Selected Primary)
-Combines spatial and frequency domain analysis:
-- Laplacian variance identifies overall blur level
-- FFT spectrum distinguishes blur type
-- No training data required
-- Fast real-time inference
+### Model 3 — FFT Power Spectrum
+Analyzes frequency domain characteristics for blur classification.
 
-### Model 2: Sobel Directional Gradient
-Analyzes directional gradients:
-- Identifies horizontal vs vertical motion blur
-- Compares gradient magnitudes
-- Effective for motion detection
+### Model 4 — Blind Deconvolution PSF
+Estimates Point Spread Function to identify blur type.
 
-### Model 3: FFT Power Spectrum
-Analyzes frequency domain characteristics:
-- Detects directional streaks (motion)
-- Identifies circular drop-off (Gaussian/Defocus)
-- Measures high-frequency richness (sharpness)
+### Model 5 — Deep Learning CNN
+TensorFlow-based feature extraction and classification.
 
-### Model 4: Blind Deconvolution
-Estimates Point Spread Function:
-- Circular PSF = Defocus/Lens Blur
-- Linear PSF = Motion Blur
-- Gaussian PSF = Gaussian Blur
+## Supported Blur Types
 
-### Model 5: Deep Learning CNN
-TensorFlow/Keras based classification:
-- MobileNetV2 backbone
-- Trained on blur type dataset
-- Provides probability distribution
+- **Gaussian**: Uniform softness from out-of-focus capture
+- **Motion**: Directional streaking from movement
+- **Defocus**: Bokeh-like blur from shallow depth of field
+- **Lens**: Optical distortion from lens imperfections
+- **Sharp**: Clear image with no detectable blur
+
+## System Events
+
+The application logs all user activities:
+- USER_REGISTERED, USER_VERIFIED, USER_LOGIN, USER_LOGOUT
+- IMAGE_UPLOADED, BLUR_TYPE_DETECTED, SHARP_IMAGE
+- LOGIN_FAILED
 
 ## Database Schema
 
-### Users Table
-- id, username, email, password (SHA512), email_verified, verification_token, created_at
-
-### Images Table
-- id, user_id, filename, upload_path, uploaded_at
-
-### Detection Results Table
-- id, image_id, user_id, model_used, blur_type, confidence, blur_score, explanation, processing_time, detected_at
-
-### Model Comparisons Table
-- id, image_id, model_name, blur_type, confidence, processing_time, ran_at
-
-### System Events Table
-- id, event_type, user_id, message, details (JSON), timestamp
+5 tables optimized for blur detection and analysis:
+- Users (with email verification)
+- Images (uploaded files tracking)
+- Detection Results (analysis outcomes)
+- Model Comparisons (5-model comparison data)
+- System Events (activity logging)
 
 ## Supported Image Formats
-- PNG
-- JPG/JPEG
-- GIF
-- BMP
-- WebP
-
-Maximum file size: 16 MB
+- PNG, JPG, JPEG, GIF, BMP, WebP
+- Maximum file size: 16 MB
 
 ## Security Features
-
-🔒 **Password Security**
-- SHA512 hashing algorithm
-- No plain-text password storage
-- Secure session management
-
-🔐 **Email Verification**
-- Required for account activation
-- Time-limited verification tokens
-- Prevents spam registrations
-
-📊 **Input Validation**
-- File type validation
-- File size restrictions
-- XSS protection via template escaping
-
-## Performance Optimization
-
-- Image caching for re-analysis
-- Optimized model inference
-- Database indexing on frequently queried fields
-- CDN-ready static files
-
-## Troubleshooting
-
-### Email Not Sending
-1. Check MAIL_USERNAME and MAIL_PASSWORD in .env
-2. Enable "Less secure app access" for Gmail
-3. Use app-specific passwords for Gmail accounts
-4. Check spam/junk folder
-
-### Images Not Analyzing
-1. Verify upload folder permissions
-2. Check file format (must be PNG, JPG, GIF, BMP, or WebP)
-3. Ensure file size < 16 MB
-4. Check server logs for errors
-
-### Database Errors
-1. Delete blurdetect.db to reset database
-2. Re-run database initialization
-3. Check database file permissions
-
-## API Endpoints
-
-- `POST /auth/register` - User registration
-- `POST /auth/login` - User login
-- `GET /auth/logout` - User logout
-- `GET /dashboard` - User dashboard
-- `POST /detection/upload` - Upload image
-- `GET /detection/analyze/<image_id>` - Analyze image
-- `GET /detection/history` - View history
-- `GET /events` - View user events
-- `GET /auth/profile` - View profile
-
-## Environment Variables
-
-- `FLASK_APP` - Flask application file
-- `FLASK_ENV` - Environment (development/production)
-- `SECRET_KEY` - Flask secret key
-- `DATABASE_URL` - Database connection string
-- `MAIL_SERVER` - SMTP server address
-- `MAIL_PORT` - SMTP server port
-- `MAIL_USE_TLS` - Use TLS encryption
-- `MAIL_USERNAME` - Email sender username
-- `MAIL_PASSWORD` - Email sender password
-- `UPLOAD_FOLDER` - Directory for uploaded images
-- `MAX_CONTENT_LENGTH` - Maximum upload size in bytes
-
-## Dependencies
-
-Core:
-- Flask 3.0.0
-- Flask-SQLAlchemy 3.1.1
-- Flask-Mail 0.9.1
-- Werkzeug 3.0.1
-- python-dotenv 1.0.0
-
-Computer Vision:
-- opencv-python 4.8.1.78
-- numpy 1.24.3
-- scikit-image 0.21.0
-- scipy 1.11.4
-- pillow 10.0.1
-
-Deep Learning:
-- tensorflow 2.15.0
-- keras 2.15.0
-
-## Contributing
-
-Contributions are welcome! Please follow these steps:
-1. Fork the repository
-2. Create a feature branch
-3. Commit your changes
-4. Push to the branch
-5. Create a Pull Request
-
-## License
-
-This project is licensed under the MIT License - see LICENSE file for details.
+- SHA256 password hashing
+- Email verification required
+- Session-based authentication
+- Input validation and sanitization
+- CSRF protection
 
 ## Support
+Email: aldwin.hamilit44@gmail.com
+GitHub: https://github.com/Aldwinzzz/BlurDetect
 
-For issues, questions, or suggestions:
-- Open an issue on GitHub
-- Contact: aldwin.hamilit44@gmail.com
-
-## Changelog
-
-### Version 1.0.0 (Current)
-- Initial release
-- 5 blur detection models
-- Email verification system
-- Complete user dashboard
-- System events logging
-- Professional UI/UX
+## License
+MIT License
 
 ---
 
-**BlurDetect** - Professional Blur Type Detection System
-Built with Flask, OpenCV, and TensorFlow
+**BlurDetect** — Advanced Blur Type Detection System v1.0.0
