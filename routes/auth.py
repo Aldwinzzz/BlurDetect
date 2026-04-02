@@ -2,11 +2,10 @@ from flask import Blueprint, render_template, request, redirect, url_for, sessio
 from models import db, User, SystemEvent
 import hashlib
 from itsdangerous import URLSafeTimedSerializer
-from flask_mail import Mail, Message
+from flask_mail import Message
 from datetime import datetime
 
 auth_bp = Blueprint('auth', __name__)
-mail = Mail()
 
 
 def hash_password(password):
@@ -17,28 +16,46 @@ def hash_password(password):
 def send_verification_email(user_email, token):
     """Send verification email to user."""
     try:
+        from flask_mail import Mail
+        mail = current_app.extensions.get('mail')
+        if not mail:
+            print("Mail extension not initialized")
+            return False
+        
+        verification_url = f"{current_app.config.get('SERVER_URL', 'http://localhost:5000')}/auth/verify/{token}"
+        
         msg = Message(
             'Verify Your BlurDetect Account',
             recipients=[user_email],
             html=f"""
             <html>
-                <body style="font-family: Arial, sans-serif;">
-                    <h2>Welcome to BlurDetect!</h2>
-                    <p>Please verify your email address by clicking the link below:</p>
-                    <a href="{current_app.config.get('SERVER_URL', 'http://localhost:5000')}/auth/verify/{token}" 
-                       style="background-color: #007BFF; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;">
-                        Verify Email
-                    </a>
-                    <p>Or copy this link: {current_app.config.get('SERVER_URL', 'http://localhost:5000')}/auth/verify/{token}</p>
-                    <p>This link expires in 1 hour.</p>
+                <body style="font-family: Arial, sans-serif; line-height: 1.6;">
+                    <div style="max-width: 600px; margin: 0 auto; background: #f9fafb; padding: 40px; border-radius: 10px;">
+                        <h2 style="color: #007BFF; margin-bottom: 20px;">Welcome to BlurDetect!</h2>
+                        <p style="color: #333; font-size: 16px;">Thank you for registering. Please verify your email address by clicking the button below:</p>
+                        <div style="margin: 30px 0; text-align: center;">
+                            <a href="{verification_url}" 
+                               style="background-color: #007BFF; color: white; padding: 12px 30px; text-decoration: none; border-radius: 5px; font-weight: bold; display: inline-block;">
+                                Verify Email
+                            </a>
+                        </div>
+                        <p style="color: #666; font-size: 14px;">Or copy this link:</p>
+                        <p style="color: #007BFF; word-break: break-all; font-size: 13px;">{verification_url}</p>
+                        <p style="color: #999; font-size: 13px; margin-top: 20px;">This link expires in 1 hour.</p>
+                        <hr style="border: none; border-top: 1px solid #ddd; margin: 30px 0;">
+                        <p style="color: #666; font-size: 13px;">If you did not register for BlurDetect, please ignore this email.</p>
+                    </div>
                 </body>
             </html>
             """
         )
         mail.send(msg)
+        print(f"Verification email sent successfully to {user_email}")
         return True
     except Exception as e:
-        print(f"Error sending email: {e}")
+        print(f"Error sending email to {user_email}: {str(e)}")
+        import traceback
+        traceback.print_exc()
         return False
 
 
