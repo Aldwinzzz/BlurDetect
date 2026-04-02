@@ -1,0 +1,307 @@
+{% extends "base.html" %}
+
+{% block title %}Profile - BlurDetect{% endblock %}
+
+{% block extra_css %}
+<style>
+    .profile-container {
+        max-width: 700px;
+        margin: 0 auto;
+    }
+    
+    .profile-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 40px;
+        border-radius: 12px;
+        margin-bottom: 40px;
+        text-align: center;
+    }
+    
+    .profile-avatar {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        background: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 48px;
+        color: #667eea;
+        margin: 0 auto 20px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    }
+    
+    .profile-name {
+        font-size: 24px;
+        font-weight: 700;
+        margin-bottom: 8px;
+    }
+    
+    .profile-email {
+        opacity: 0.9;
+        font-size: 14px;
+    }
+    
+    .profile-section {
+        background: white;
+        border-radius: 12px;
+        padding: 30px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.07);
+        margin-bottom: 24px;
+    }
+    
+    .profile-section-title {
+        font-size: 18px;
+        font-weight: 700;
+        color: #2d3748;
+        margin-bottom: 20px;
+        padding-bottom: 12px;
+        border-bottom: 2px solid #e2e8f0;
+    }
+    
+    .profile-field {
+        margin-bottom: 20px;
+    }
+    
+    .profile-field:last-child {
+        margin-bottom: 0;
+    }
+    
+    .profile-label {
+        font-weight: 600;
+        color: #4a5568;
+        font-size: 13px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 6px;
+    }
+    
+    .profile-value {
+        color: #2d3748;
+        font-size: 14px;
+    }
+    
+    .profile-stat {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+        margin-bottom: 20px;
+    }
+    
+    .stat-box {
+        background: #f7fafc;
+        padding: 16px;
+        border-radius: 8px;
+        border-left: 4px solid #667eea;
+    }
+    
+    .stat-label {
+        font-size: 12px;
+        font-weight: 600;
+        color: #a0aec0;
+        text-transform: uppercase;
+        margin-bottom: 6px;
+    }
+    
+    .stat-value {
+        font-size: 24px;
+        font-weight: 700;
+        color: #667eea;
+    }
+    
+    .badge-verified {
+        display: inline-block;
+        padding: 6px 12px;
+        background: #d4edda;
+        color: #155724;
+        border-radius: 6px;
+        font-size: 12px;
+        font-weight: 600;
+    }
+    
+    .badge-unverified {
+        display: inline-block;
+        padding: 6px 12px;
+        background: #fff3cd;
+        color: #856404;
+        border-radius: 6px;
+        font-size: 12px;
+        font-weight: 600;
+    }
+    
+    .form-group {
+        margin-bottom: 20px;
+    }
+    
+    .form-label {
+        font-weight: 600;
+        color: #2d3748;
+        margin-bottom: 8px;
+        display: block;
+    }
+    
+    .form-control {
+        border-radius: 8px;
+        border: 1px solid #e2e8f0;
+        padding: 10px 14px;
+    }
+    
+    .btn-action {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 12px 24px;
+        border-radius: 8px;
+        border: none;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        cursor: pointer;
+    }
+    
+    .btn-action:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+        color: white;
+    }
+    
+    .btn-danger {
+        background: #f56565;
+    }
+    
+    .btn-danger:hover {
+        background: #e53e3e;
+        box-shadow: 0 8px 20px rgba(245, 101, 101, 0.4);
+    }
+    
+    .info-alert {
+        background: #edf2f7;
+        border-left: 4px solid #667eea;
+        padding: 16px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+        color: #2d3748;
+        font-size: 13px;
+        line-height: 1.6;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="fade-in profile-container">
+    <!-- Header -->
+    <div class="profile-header">
+        <div class="profile-avatar">
+            <i class="bi bi-person-fill"></i>
+        </div>
+        <h2 class="profile-name">{{ user.username }}</h2>
+        <p class="profile-email">{{ user.email }}</p>
+        {% if user.email_verified %}
+            <span class="badge-verified">
+                <i class="bi bi-check-circle"></i> Email Verified
+            </span>
+        {% else %}
+            <span class="badge-unverified">
+                <i class="bi bi-exclamation-circle"></i> Email Not Verified
+            </span>
+        {% endif %}
+    </div>
+
+    <!-- Account Information -->
+    <div class="profile-section">
+        <h3 class="profile-section-title"><i class="bi bi-info-circle"></i> Account Information</h3>
+        
+        <div class="profile-stat">
+            <div class="stat-box">
+                <div class="stat-label">Member Since</div>
+                <div class="stat-value">{{ user.created_at.strftime('%b %d, %Y') }}</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-label">Account Status</div>
+                <div class="stat-value" style="color: #48bb78; font-size: 14px;">
+                    <i class="bi bi-check-circle"></i> Active
+                </div>
+            </div>
+        </div>
+        
+        <div class="profile-field">
+            <div class="profile-label">Username</div>
+            <div class="profile-value">{{ user.username }}</div>
+        </div>
+        
+        <div class="profile-field">
+            <div class="profile-label">Email Address</div>
+            <div class="profile-value">{{ user.email }}</div>
+        </div>
+        
+        <div class="profile-field">
+            <div class="profile-label">Email Verification Status</div>
+            <div class="profile-value">
+                {% if user.email_verified %}
+                    <span class="badge-verified">
+                        <i class="bi bi-check-circle"></i> Verified on {{ user.created_at.strftime('%Y-%m-%d') }}
+                    </span>
+                {% else %}
+                    <span class="badge-unverified">
+                        <i class="bi bi-exclamation-circle"></i> Not Verified
+                    </span>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Security Section -->
+    <div class="profile-section">
+        <h3 class="profile-section-title"><i class="bi bi-shield-check"></i> Security</h3>
+        
+        <div class="info-alert">
+            <i class="bi bi-info-circle"></i> Your password is securely hashed using SHA512 encryption and never stored in plain text.
+        </div>
+        
+        <button class="btn-action" data-bs-toggle="modal" data-bs-target="#changePasswordModal">
+            <i class="bi bi-lock"></i> Change Password
+        </button>
+    </div>
+
+    <!-- Account Actions -->
+    <div class="profile-section">
+        <h3 class="profile-section-title"><i class="bi bi-gear"></i> Account Actions</h3>
+        
+        <div style="display: grid; gap: 12px;">
+            <a href="{{ url_for('detection_bp.history') }}" class="btn-action" style="text-decoration: none; display: block; text-align: center;">
+                <i class="bi bi-clock-history"></i> View Analysis History
+            </a>
+            <a href="{{ url_for('events') }}" class="btn-action" style="text-decoration: none; display: block; text-align: center;">
+                <i class="bi bi-calendar-event"></i> View System Events
+            </a>
+        </div>
+    </div>
+
+    <!-- Logout -->
+    <div style="text-align: center; padding: 20px 0;">
+        <a href="{{ url_for('auth_bp.logout') }}" class="btn-action btn-danger" style="text-decoration: none;">
+            <i class="bi bi-door-left"></i> Logout
+        </a>
+    </div>
+</div>
+
+<!-- Change Password Modal -->
+<div class="modal fade" id="changePasswordModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none;">
+                <h5 class="modal-title"><i class="bi bi-lock"></i> Change Password</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p style="color: #718096; margin-bottom: 20px;">Coming soon: Password change functionality will be available shortly.</p>
+                <div style="background: #edf2f7; padding: 12px; border-radius: 6px; border-left: 4px solid #667eea; color: #4a5568; font-size: 13px;">
+                    For now, if you need to reset your password, please contact our support team.
+                </div>
+            </div>
+            <div class="modal-footer" style="border-top: 1px solid #e2e8f0;">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

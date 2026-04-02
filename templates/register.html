@@ -1,0 +1,189 @@
+{% extends "base.html" %}
+
+{% block title %}Register - BlurDetect{% endblock %}
+
+{% block extra_css %}
+<style>
+    .register-container {
+        min-height: calc(100vh - 150px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+    }
+    
+    .register-card {
+        width: 100%;
+        max-width: 480px;
+        border-radius: 16px;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+        overflow: hidden;
+        background: white;
+    }
+    
+    .register-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 40px 20px;
+        text-align: center;
+    }
+    
+    .register-header h1 {
+        font-size: 28px;
+        font-weight: 700;
+        margin-bottom: 8px;
+    }
+    
+    .register-header p {
+        font-size: 14px;
+        opacity: 0.9;
+    }
+    
+    .register-body {
+        padding: 40px;
+    }
+    
+    .form-group {
+        margin-bottom: 20px;
+    }
+    
+    .form-group label {
+        font-weight: 600;
+        color: #2d3748;
+        margin-bottom: 8px;
+        display: block;
+    }
+    
+    .form-control {
+        height: 45px;
+        border-radius: 8px;
+        border: 1px solid #e2e8f0;
+        padding: 10px 14px;
+        transition: all 0.3s ease;
+    }
+    
+    .form-control:focus {
+        border-color: #667eea;
+        box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+    }
+    
+    .btn-register {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        height: 45px;
+        border-radius: 8px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        border: none;
+        width: 100%;
+    }
+    
+    .btn-register:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+        color: white;
+    }
+    
+    .register-footer {
+        padding: 20px 40px 40px;
+        text-align: center;
+    }
+    
+    .register-footer p {
+        color: #718096;
+        margin-bottom: 0;
+        font-size: 14px;
+    }
+    
+    .register-footer a {
+        color: #667eea;
+        text-decoration: none;
+        font-weight: 600;
+    }
+    
+    .register-footer a:hover {
+        text-decoration: underline;
+    }
+    
+    .password-requirements {
+        background: #f7fafc;
+        border-left: 4px solid #667eea;
+        padding: 12px;
+        border-radius: 6px;
+        font-size: 13px;
+        color: #4a5568;
+        margin-top: 15px;
+    }
+    
+    .password-requirements ul {
+        margin-bottom: 0;
+        padding-left: 20px;
+    }
+    
+    .password-requirements li {
+        margin-bottom: 4px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="register-container">
+    <div class="register-card fade-in">
+        <div class="register-header">
+            <h1><i class="bi bi-image"></i> BlurDetect</h1>
+            <p>Create Your Account</p>
+        </div>
+        
+        <div class="register-body">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ 'success' if category == 'success' else 'danger' if category == 'danger' else 'warning' if category == 'warning' else 'info' }} alert-dismissible fade show" role="alert">
+                            {{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+            
+            <form method="POST" action="{{ url_for('auth_bp.register') }}">
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input type="text" class="form-control" id="username" name="username" required autofocus minlength="3">
+                    <small class="text-muted">3+ characters, letters, numbers, and underscores</small>
+                </div>
+                
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input type="email" class="form-control" id="email" name="email" required>
+                    <small class="text-muted">We&apos;ll verify your email after registration</small>
+                </div>
+                
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" class="form-control" id="password" name="password" required minlength="6">
+                </div>
+                
+                <div class="form-group">
+                    <label for="confirm_password">Confirm Password</label>
+                    <input type="password" class="form-control" id="confirm_password" name="confirm_password" required minlength="6">
+                </div>
+                
+                <div class="password-requirements">
+                    <strong>Password Requirements:</strong>
+                    <ul>
+                        <li>At least 6 characters</li>
+                        <li>Must match the confirmation field</li>
+                    </ul>
+                </div>
+                
+                <button type="submit" class="btn btn-register mt-4">Create Account</button>
+            </form>
+        </div>
+        
+        <div class="register-footer">
+            <p>Already have an account? <a href="{{ url_for('auth_bp.login') }}">Sign in here</a></p>
+        </div>
+    </div>
+</div>
+{% endblock %}

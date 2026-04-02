@@ -1,0 +1,358 @@
+{% extends "base.html" %}
+
+{% block title %}Upload Image - BlurDetect{% endblock %}
+
+{% block extra_css %}
+<style>
+    .upload-container {
+        max-width: 600px;
+        margin: 0 auto;
+    }
+    
+    .upload-section {
+        background: white;
+        border-radius: 12px;
+        padding: 40px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.07);
+        margin-bottom: 30px;
+    }
+    
+    .upload-title {
+        font-size: 28px;
+        font-weight: 700;
+        color: #2d3748;
+        margin-bottom: 12px;
+    }
+    
+    .upload-subtitle {
+        color: #718096;
+        margin-bottom: 30px;
+    }
+    
+    .upload-area {
+        border: 2px dashed #667eea;
+        border-radius: 12px;
+        padding: 60px 20px;
+        text-align: center;
+        background: #f7fafc;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        position: relative;
+    }
+    
+    .upload-area:hover {
+        background: #edf2f7;
+        border-color: #764ba2;
+    }
+    
+    .upload-area.dragover {
+        background: #e0e7ff;
+        border-color: #667eea;
+        box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+    }
+    
+    .upload-icon {
+        font-size: 48px;
+        color: #667eea;
+        margin-bottom: 16px;
+    }
+    
+    .upload-text {
+        font-size: 16px;
+        font-weight: 600;
+        color: #2d3748;
+        margin-bottom: 8px;
+    }
+    
+    .upload-hint {
+        color: #a0aec0;
+        font-size: 13px;
+    }
+    
+    .file-input {
+        display: none;
+    }
+    
+    .or-divider {
+        text-align: center;
+        color: #a0aec0;
+        margin: 30px 0;
+        font-size: 14px;
+    }
+    
+    .form-group {
+        margin-bottom: 20px;
+    }
+    
+    .form-group label {
+        font-weight: 600;
+        color: #2d3748;
+        margin-bottom: 8px;
+        display: block;
+    }
+    
+    .form-control {
+        border-radius: 8px;
+        border: 1px solid #e2e8f0;
+        padding: 12px;
+    }
+    
+    .btn-upload {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        padding: 12px 28px;
+        font-weight: 600;
+        width: 100%;
+        transition: all 0.3s ease;
+        cursor: pointer;
+    }
+    
+    .btn-upload:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+        color: white;
+    }
+    
+    .btn-upload:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+    }
+    
+    .file-preview {
+        margin-top: 20px;
+        display: none;
+    }
+    
+    .file-preview.show {
+        display: block;
+    }
+    
+    .preview-image {
+        max-width: 100%;
+        max-height: 300px;
+        border-radius: 8px;
+        margin-bottom: 12px;
+    }
+    
+    .preview-info {
+        background: #f7fafc;
+        padding: 12px;
+        border-radius: 8px;
+        font-size: 14px;
+    }
+    
+    .preview-info-row {
+        display: flex;
+        justify-content: space-between;
+        padding: 6px 0;
+    }
+    
+    .preview-info-label {
+        font-weight: 600;
+        color: #4a5568;
+    }
+    
+    .preview-info-value {
+        color: #718096;
+    }
+    
+    .progress-container {
+        display: none;
+    }
+    
+    .progress-container.show {
+        display: block;
+        margin-top: 20px;
+    }
+    
+    .supported-formats {
+        background: #edf2f7;
+        border-left: 4px solid #667eea;
+        padding: 16px;
+        border-radius: 6px;
+        margin-top: 20px;
+    }
+    
+    .supported-formats h5 {
+        font-weight: 600;
+        color: #2d3748;
+        margin-bottom: 12px;
+        font-size: 14px;
+    }
+    
+    .format-list {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+        gap: 10px;
+        font-size: 12px;
+    }
+    
+    .format-item {
+        background: white;
+        padding: 8px;
+        border-radius: 6px;
+        text-align: center;
+        color: #667eea;
+        font-weight: 500;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="fade-in upload-container">
+    <div class="upload-section">
+        <h2 class="upload-title"><i class="bi bi-cloud-upload"></i> Upload Image</h2>
+        <p class="upload-subtitle">Upload an image to analyze its blur type and characteristics</p>
+
+        <form id="uploadForm" method="POST" enctype="multipart/form-data">
+            <!-- Drag and Drop Area -->
+            <div class="upload-area" id="uploadArea">
+                <div class="upload-icon">
+                    <i class="bi bi-cloud-arrow-up"></i>
+                </div>
+                <p class="upload-text">Drag and drop your image here</p>
+                <p class="upload-hint">or click to browse files</p>
+                <input type="file" id="fileInput" name="file" class="file-input" accept="image/*" required>
+            </div>
+
+            <!-- File Preview -->
+            <div class="file-preview" id="filePreview">
+                <img id="previewImage" class="preview-image" src="" alt="Preview">
+                <div class="preview-info">
+                    <div class="preview-info-row">
+                        <span class="preview-info-label">File Name:</span>
+                        <span class="preview-info-value" id="previewFileName">-</span>
+                    </div>
+                    <div class="preview-info-row">
+                        <span class="preview-info-label">File Size:</span>
+                        <span class="preview-info-value" id="previewFileSize">-</span>
+                    </div>
+                    <div class="preview-info-row">
+                        <span class="preview-info-label">File Type:</span>
+                        <span class="preview-info-value" id="previewFileType">-</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Progress Bar -->
+            <div class="progress-container" id="progressContainer">
+                <div class="progress">
+                    <div class="progress-bar" id="progressBar" role="progressbar" style="width: 0%">
+                        <span id="progressText">0%</span>
+                    </div>
+                </div>
+                <p class="text-center text-muted mt-2">
+                    <i class="bi bi-arrow-repeat"></i> Processing your image...
+                </p>
+            </div>
+
+            <!-- Submit Button -->
+            <button type="submit" class="btn-upload" id="submitBtn">
+                <i class="bi bi-check-circle"></i> Analyze Image
+            </button>
+        </form>
+
+        <!-- Supported Formats -->
+        <div class="supported-formats">
+            <h5><i class="bi bi-info-circle"></i> Supported Formats</h5>
+            <div class="format-list">
+                <div class="format-item">PNG</div>
+                <div class="format-item">JPG/JPEG</div>
+                <div class="format-item">GIF</div>
+                <div class="format-item">BMP</div>
+                <div class="format-item">WebP</div>
+            </div>
+        </div>
+
+        <!-- Instructions -->
+        <div style="background: #f0f4ff; border-left: 4px solid #667eea; padding: 16px; border-radius: 6px; margin-top: 20px;">
+            <h5 style="font-weight: 600; color: #2d3748; margin-bottom: 8px; font-size: 14px;">
+                <i class="bi bi-lightbulb"></i> Tips for Best Results
+            </h5>
+            <ul style="margin-bottom: 0; padding-left: 20px; font-size: 13px;">
+                <li>Use clear, high-quality images for better detection accuracy</li>
+                <li>Maximum file size: 16 MB</li>
+                <li>The system will analyze 5 different blur type detection models</li>
+                <li>Results include confidence scores and detailed explanations</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<script>
+const uploadArea = document.getElementById('uploadArea');
+const fileInput = document.getElementById('fileInput');
+const filePreview = document.getElementById('filePreview');
+const previewImage = document.getElementById('previewImage');
+const uploadForm = document.getElementById('uploadForm');
+const submitBtn = document.getElementById('submitBtn');
+const progressContainer = document.getElementById('progressContainer');
+
+// Click to upload
+uploadArea.addEventListener('click', () => fileInput.click());
+
+// Drag and drop
+uploadArea.addEventListener('dragover', (e) => {
+    e.preventDefault();
+    uploadArea.classList.add('dragover');
+});
+
+uploadArea.addEventListener('dragleave', () => {
+    uploadArea.classList.remove('dragover');
+});
+
+uploadArea.addEventListener('drop', (e) => {
+    e.preventDefault();
+    uploadArea.classList.remove('dragover');
+    const files = e.dataTransfer.files;
+    if (files.length > 0) {
+        fileInput.files = files;
+        handleFileSelect();
+    }
+});
+
+// File selection
+fileInput.addEventListener('change', handleFileSelect);
+
+function handleFileSelect() {
+    const file = fileInput.files[0];
+    if (file) {
+        // Show preview
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            previewImage.src = e.target.result;
+            document.getElementById('previewFileName').textContent = file.name;
+            document.getElementById('previewFileSize').textContent = formatFileSize(file.size);
+            document.getElementById('previewFileType').textContent = file.type;
+            filePreview.classList.add('show');
+        };
+        reader.readAsDataURL(file);
+    }
+}
+
+function formatFileSize(bytes) {
+    if (bytes === 0) return '0 Bytes';
+    const k = 1024;
+    const sizes = ['Bytes', 'KB', 'MB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return Math.round(bytes / Math.pow(k, i) * 100) / 100 + ' ' + sizes[i];
+}
+
+// Form submission
+uploadForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    
+    if (!fileInput.files[0]) {
+        alert('Please select a file');
+        return;
+    }
+    
+    submitBtn.disabled = true;
+    progressContainer.classList.add('show');
+    
+    uploadForm.submit();
+});
+</script>
+{% endblock %}

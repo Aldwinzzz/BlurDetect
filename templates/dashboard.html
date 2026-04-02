@@ -1,0 +1,332 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - BlurDetect{% endblock %}
+
+{% block extra_css %}
+<style>
+    .stat-card {
+        border-radius: 12px;
+        padding: 24px;
+        background: white;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.07);
+        margin-bottom: 24px;
+        transition: all 0.3s ease;
+    }
+    
+    .stat-card:hover {
+        box-shadow: 0 12px 24px rgba(0,0,0,0.12);
+        transform: translateY(-4px);
+    }
+    
+    .stat-icon {
+        width: 60px;
+        height: 60px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 28px;
+        margin-bottom: 16px;
+    }
+    
+    .stat-icon.blue {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+    }
+    
+    .stat-icon.green {
+        background: #d4edda;
+        color: #155724;
+    }
+    
+    .stat-icon.purple {
+        background: #e7d4f5;
+        color: #6f42c1;
+    }
+    
+    .stat-icon.orange {
+        background: #ffe8d6;
+        color: #ff7f00;
+    }
+    
+    .stat-value {
+        font-size: 32px;
+        font-weight: 700;
+        color: #2d3748;
+        margin-bottom: 4px;
+    }
+    
+    .stat-label {
+        color: #718096;
+        font-size: 14px;
+        font-weight: 500;
+    }
+    
+    .blur-chart {
+        background: white;
+        border-radius: 12px;
+        padding: 24px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.07);
+    }
+    
+    .blur-item {
+        display: flex;
+        align-items: center;
+        margin-bottom: 16px;
+        padding-bottom: 16px;
+        border-bottom: 1px solid #e2e8f0;
+    }
+    
+    .blur-item:last-child {
+        margin-bottom: 0;
+        padding-bottom: 0;
+        border-bottom: none;
+    }
+    
+    .blur-badge {
+        padding: 6px 12px;
+        border-radius: 6px;
+        font-weight: 600;
+        font-size: 12px;
+        min-width: 120px;
+    }
+    
+    .blur-badge.gaussian {
+        background-color: #e6f4ff;
+        color: #0066cc;
+    }
+    
+    .blur-badge.motion {
+        background-color: #fff4e6;
+        color: #cc6600;
+    }
+    
+    .blur-badge.defocus {
+        background-color: #f0e6ff;
+        color: #6600cc;
+    }
+    
+    .blur-badge.lens {
+        background-color: #e6f9ff;
+        color: #0099cc;
+    }
+    
+    .blur-badge.sharp {
+        background-color: #e6ffe6;
+        color: #009900;
+    }
+    
+    .progress-bar {
+        background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+        height: 8px;
+        border-radius: 4px;
+    }
+    
+    .blur-count {
+        margin-left: auto;
+        font-size: 16px;
+        font-weight: 700;
+        color: #2d3748;
+    }
+    
+    .recent-images {
+        background: white;
+        border-radius: 12px;
+        padding: 24px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.07);
+    }
+    
+    .image-item {
+        display: flex;
+        align-items: center;
+        padding: 16px;
+        border-radius: 8px;
+        margin-bottom: 12px;
+        background: #f7fafc;
+        transition: all 0.3s ease;
+    }
+    
+    .image-item:hover {
+        background: #edf2f7;
+    }
+    
+    .image-item:last-child {
+        margin-bottom: 0;
+    }
+    
+    .image-icon {
+        width: 48px;
+        height: 48px;
+        border-radius: 8px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 24px;
+        margin-right: 16px;
+        flex-shrink: 0;
+    }
+    
+    .image-info {
+        flex: 1;
+    }
+    
+    .image-name {
+        font-weight: 600;
+        color: #2d3748;
+        font-size: 14px;
+    }
+    
+    .image-date {
+        color: #a0aec0;
+        font-size: 12px;
+        margin-top: 4px;
+    }
+    
+    .image-result {
+        padding: 6px 12px;
+        border-radius: 6px;
+        font-weight: 600;
+        font-size: 12px;
+        margin-left: auto;
+    }
+    
+    .welcome-section {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 40px;
+        border-radius: 12px;
+        margin-bottom: 40px;
+    }
+    
+    .welcome-title {
+        font-size: 28px;
+        font-weight: 700;
+        margin-bottom: 12px;
+    }
+    
+    .welcome-subtitle {
+        opacity: 0.9;
+        font-size: 16px;
+        margin-bottom: 24px;
+    }
+    
+    .welcome-btn {
+        display: inline-block;
+        background: white;
+        color: #667eea;
+        padding: 12px 28px;
+        border-radius: 8px;
+        text-decoration: none;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+    
+    .welcome-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+        color: #667eea;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="fade-in">
+    <!-- Welcome Section -->
+    <div class="welcome-section">
+        <h2 class="welcome-title">Welcome back, {{ user.username }}!</h2>
+        <p class="welcome-subtitle">Monitor your blur detection analysis and track your recent uploads</p>
+        <a href="{{ url_for('detection_bp.upload') }}" class="welcome-btn">
+            <i class="bi bi-cloud-upload"></i> Upload New Image
+        </a>
+    </div>
+
+    <!-- Statistics -->
+    <h3 class="section-title">Your Statistics</h3>
+    <div class="row">
+        <div class="col-md-6 col-lg-4">
+            <div class="stat-card">
+                <div class="stat-icon blue">
+                    <i class="bi bi-image"></i>
+                </div>
+                <div class="stat-value">{{ total_images }}</div>
+                <div class="stat-label">Total Images Uploaded</div>
+            </div>
+        </div>
+        <div class="col-md-6 col-lg-4">
+            <div class="stat-card">
+                <div class="stat-icon green">
+                    <i class="bi bi-check-circle"></i>
+                </div>
+                <div class="stat-value">{{ total_detections }}</div>
+                <div class="stat-label">Blur Analyses Completed</div>
+            </div>
+        </div>
+        <div class="col-md-6 col-lg-4">
+            <div class="stat-card">
+                <div class="stat-icon purple">
+                    <i class="bi bi-bar-chart"></i>
+                </div>
+                <div class="stat-value">{{ (total_detections * 100 / (total_images + 1)) | int }}%</div>
+                <div class="stat-label">Analysis Completion Rate</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Blur Type Distribution -->
+    <h3 class="section-title mt-5">Blur Type Distribution</h3>
+    <div class="blur-chart">
+        {% if blur_types %}
+            {% set total = blur_types.values() | sum %}
+            
+            {% for blur_type, count in blur_types.items() %}
+                {% set percentage = (count * 100 / total) | int %}
+                {% set badge_class = blur_type.lower().replace(' ', '').replace('blur', '') %}
+                <div class="blur-item">
+                    <div class="blur-badge {{ badge_class }}">{{ blur_type }}</div>
+                    <div class="flex-grow-1 mx-3">
+                        <div class="progress" style="height: 8px; border-radius: 4px;">
+                            <div class="progress-bar" role="progressbar" style="width: {{ percentage }}%"></div>
+                        </div>
+                    </div>
+                    <div class="blur-count">{{ count }} ({{ percentage }}%)</div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p class="text-muted text-center py-4">No blur analyses yet. <a href="{{ url_for('detection_bp.upload') }}">Upload an image to get started!</a></p>
+        {% endif %}
+    </div>
+
+    <!-- Recent Images -->
+    <h3 class="section-title mt-5">Recent Uploads</h3>
+    <div class="recent-images">
+        {% if recent_images %}
+            {% for item in recent_images %}
+                <div class="image-item">
+                    <div class="image-icon">
+                        <i class="bi bi-image"></i>
+                    </div>
+                    <div class="image-info">
+                        <div class="image-name">{{ item.image.filename }}</div>
+                        <div class="image-date">
+                            <i class="bi bi-calendar"></i> {{ item.image.uploaded_at.strftime('%Y-%m-%d %H:%M') }}
+                        </div>
+                    </div>
+                    {% if item.result %}
+                        <div class="image-result blur-badge {{ item.result.blur_type.lower().replace(' ', '').replace('blur', '') }}">
+                            {{ item.result.blur_type }}
+                        </div>
+                    {% else %}
+                        <a href="{{ url_for('detection_bp.analyze', image_id=item.image.id) }}" class="btn btn-sm btn-primary">
+                            Analyze
+                        </a>
+                    {% endif %}
+                </div>
+            {% endfor %}
+        {% else %}
+            <p class="text-muted text-center py-4">No images uploaded yet. <a href="{{ url_for('detection_bp.upload') }}">Get started now!</a></p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

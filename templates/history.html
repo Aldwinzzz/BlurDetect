@@ -1,0 +1,365 @@
+{% extends "base.html" %}
+
+{% block title %}Analysis History - BlurDetect{% endblock %}
+
+{% block extra_css %}
+<style>
+    .history-container {
+        max-width: 1000px;
+        margin: 0 auto;
+    }
+    
+    .history-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 40px;
+        border-radius: 12px;
+        margin-bottom: 40px;
+    }
+    
+    .history-title {
+        font-size: 28px;
+        font-weight: 700;
+        margin-bottom: 12px;
+    }
+    
+    .history-subtitle {
+        opacity: 0.9;
+        font-size: 16px;
+    }
+    
+    .history-content {
+        background: white;
+        border-radius: 12px;
+        padding: 30px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.07);
+    }
+    
+    .image-card {
+        display: grid;
+        grid-template-columns: 120px 1fr;
+        gap: 20px;
+        padding: 20px;
+        border: 1px solid #e2e8f0;
+        border-radius: 8px;
+        margin-bottom: 16px;
+        transition: all 0.3s ease;
+        background: white;
+    }
+    
+    .image-card:hover {
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        border-color: #cbd5e0;
+    }
+    
+    .image-card:last-child {
+        margin-bottom: 0;
+    }
+    
+    .image-thumbnail {
+        width: 120px;
+        height: 120px;
+        border-radius: 8px;
+        object-fit: cover;
+        background: #f7fafc;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 48px;
+        color: #cbd5e0;
+    }
+    
+    .image-info {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+    
+    .image-name {
+        font-weight: 700;
+        color: #2d3748;
+        font-size: 15px;
+        word-break: break-word;
+    }
+    
+    .image-meta {
+        display: flex;
+        gap: 20px;
+        flex-wrap: wrap;
+        margin-top: 8px;
+    }
+    
+    .meta-item {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 13px;
+        color: #718096;
+    }
+    
+    .meta-label {
+        font-weight: 600;
+        color: #4a5568;
+    }
+    
+    .result-badge {
+        display: inline-block;
+        padding: 6px 12px;
+        border-radius: 6px;
+        font-weight: 600;
+        font-size: 12px;
+    }
+    
+    .badge-gaussian { background: #e6f4ff; color: #0066cc; }
+    .badge-motion { background: #fff4e6; color: #cc6600; }
+    .badge-defocus { background: #f0e6ff; color: #6600cc; }
+    .badge-lens { background: #e6f9ff; color: #0099cc; }
+    .badge-sharp { background: #e6ffe6; color: #009900; }
+    
+    .image-actions {
+        display: flex;
+        gap: 8px;
+    }
+    
+    .btn-small {
+        padding: 6px 12px;
+        border-radius: 6px;
+        font-size: 12px;
+        font-weight: 600;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        border: none;
+        cursor: pointer;
+    }
+    
+    .btn-view {
+        background: #667eea;
+        color: white;
+    }
+    
+    .btn-view:hover {
+        background: #5568d3;
+        color: white;
+    }
+    
+    .btn-delete {
+        background: #f0f0f0;
+        color: #718096;
+    }
+    
+    .btn-delete:hover {
+        background: #e2e8f0;
+    }
+    
+    .empty-state {
+        text-align: center;
+        padding: 60px 20px;
+    }
+    
+    .empty-icon {
+        font-size: 64px;
+        color: #cbd5e0;
+        margin-bottom: 16px;
+    }
+    
+    .empty-title {
+        font-size: 20px;
+        font-weight: 700;
+        color: #2d3748;
+        margin-bottom: 8px;
+    }
+    
+    .empty-text {
+        color: #718096;
+        margin-bottom: 24px;
+    }
+    
+    .empty-btn {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 12px 28px;
+        border-radius: 8px;
+        text-decoration: none;
+        font-weight: 600;
+        display: inline-block;
+        transition: all 0.3s ease;
+    }
+    
+    .empty-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+        color: white;
+    }
+    
+    .filter-controls {
+        display: flex;
+        gap: 12px;
+        margin-bottom: 24px;
+        flex-wrap: wrap;
+    }
+    
+    .filter-btn {
+        padding: 8px 16px;
+        border-radius: 6px;
+        border: 2px solid #e2e8f0;
+        background: white;
+        color: #4a5568;
+        font-weight: 500;
+        font-size: 13px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+    
+    .filter-btn.active {
+        border-color: #667eea;
+        background: #667eea;
+        color: white;
+    }
+    
+    .filter-btn:hover:not(.active) {
+        border-color: #cbd5e0;
+    }
+    
+    @media (max-width: 768px) {
+        .image-card {
+            grid-template-columns: 80px 1fr;
+        }
+        
+        .image-thumbnail {
+            width: 80px;
+            height: 80px;
+            font-size: 32px;
+        }
+        
+        .image-meta {
+            gap: 12px;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="fade-in history-container">
+    <!-- Header -->
+    <div class="history-header">
+        <h2 class="history-title"><i class="bi bi-clock-history"></i> Analysis History</h2>
+        <p class="history-subtitle">Review all your previous blur type detections</p>
+    </div>
+
+    <!-- Content -->
+    <div class="history-content">
+        {% if image_data %}
+            <!-- Filter Controls -->
+            <div class="filter-controls">
+                <button class="filter-btn active" onclick="filterByType('all')">
+                    <i class="bi bi-funnel"></i> All
+                </button>
+                <button class="filter-btn" onclick="filterByType('gaussian')">
+                    Gaussian Blur
+                </button>
+                <button class="filter-btn" onclick="filterByType('motion')">
+                    Motion Blur
+                </button>
+                <button class="filter-btn" onclick="filterByType('defocus')">
+                    Defocus Blur
+                </button>
+                <button class="filter-btn" onclick="filterByType('lens')">
+                    Lens Blur
+                </button>
+                <button class="filter-btn" onclick="filterByType('sharp')">
+                    Sharp
+                </button>
+            </div>
+
+            <!-- Image List -->
+            {% for item in image_data %}
+                <div class="image-card" data-blur-type="{% if item.result %}{{ item.result.blur_type.lower().replace(' ', '') }}{% endif %}">
+                    <!-- Thumbnail -->
+                    <img src="{{ url_for('static', filename='uploads/' + item.image.filename) }}" 
+                         alt="Image preview" 
+                         class="image-thumbnail"
+                         onerror="this.style.display='none';">
+                    <div class="image-thumbnail" style="{% if 'src' not in url_for('static', filename='uploads/' + item.image.filename) %}display: flex;{% endif %} display: none;">
+                        <i class="bi bi-image"></i>
+                    </div>
+                    
+                    <!-- Info -->
+                    <div class="image-info">
+                        <div>
+                            <div class="image-name">{{ item.image.filename }}</div>
+                            <div class="image-meta">
+                                <div class="meta-item">
+                                    <span class="meta-label">Uploaded:</span>
+                                    <span>{{ item.image.uploaded_at.strftime('%Y-%m-%d %H:%M') }}</span>
+                                </div>
+                                {% if item.result %}
+                                    <div class="meta-item">
+                                        <span class="meta-label">Result:</span>
+                                        <span class="result-badge badge-{{ item.result.blur_type.lower().replace(' ', '').replace('blur', '') }}">
+                                            {{ item.result.blur_type }}
+                                        </span>
+                                    </div>
+                                    <div class="meta-item">
+                                        <span class="meta-label">Confidence:</span>
+                                        <span>{{ (item.result.confidence * 100) | round(1) }}%</span>
+                                    </div>
+                                {% else %}
+                                    <div class="meta-item">
+                                        <span class="text-muted">Not analyzed yet</span>
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        <!-- Actions -->
+                        <div class="image-actions">
+                            {% if item.result %}
+                                <a href="{{ url_for('detection_bp.analyze', image_id=item.image.id) }}" class="btn-small btn-view">
+                                    <i class="bi bi-eye"></i> View Results
+                                </a>
+                            {% else %}
+                                <a href="{{ url_for('detection_bp.analyze', image_id=item.image.id) }}" class="btn-small btn-view">
+                                    <i class="bi bi-play"></i> Analyze
+                                </a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <!-- Empty State -->
+            <div class="empty-state">
+                <div class="empty-icon">
+                    <i class="bi bi-inbox"></i>
+                </div>
+                <h3 class="empty-title">No Analysis History Yet</h3>
+                <p class="empty-text">You haven&apos;t uploaded any images for blur detection analysis.</p>
+                <a href="{{ url_for('detection_bp.upload') }}" class="empty-btn">
+                    <i class="bi bi-cloud-upload"></i> Upload Your First Image
+                </a>
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+<script>
+function filterByType(type) {
+    const cards = document.querySelectorAll('.image-card');
+    const buttons = document.querySelectorAll('.filter-btn');
+    
+    // Update active button
+    buttons.forEach(btn => btn.classList.remove('active'));
+    event.target.classList.add('active');
+    
+    // Filter cards
+    cards.forEach(card => {
+        if (type === 'all') {
+            card.style.display = '';
+        } else {
+            const cardType = card.dataset.blurType;
+            card.style.display = cardType === type ? '' : 'none';
+        }
+    });
+}
+</script>
+{% endblock %}
