@@ -1,0 +1,2 @@
+# BlurDetect
+ITEL3AFINALS
