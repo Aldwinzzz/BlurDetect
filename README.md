@@ -20,7 +20,7 @@ A sophisticated Flask web application that detects and classifies five different
 
 ### Technical Stack
 - **Backend**: Flask 3.1.3 (Python)
-- **Database**: PostgreSQL (Supabase)
+- **Database**: PostgreSQL (Neon Serverless)
 - **ORM**: SQLAlchemy 3.1.1
 - **Computer Vision**: OpenCV 4.13.0.92
 - **Scientific Computing**: NumPy 2.4.3, SciPy 1.17.1
@@ -33,48 +33,62 @@ A sophisticated Flask web application that detects and classifies five different
 
 ### Requirements
 - Python 3.9+
-- PostgreSQL (Supabase instance)
+- PostgreSQL (Neon serverless database - free tier available)
 - pip package manager
 
-### Step 1: Clone Repository
+### Quick Setup (with Neon)
+
+**See [NEON_SETUP.md](NEON_SETUP.md) for detailed step-by-step guide with screenshots.**
+
+### Step 1: Get Neon Database
+1. Visit **https://neon.tech** and sign up (free tier available)
+2. Create a new project named `blurdetect`
+3. Copy your connection string (looks like: `postgresql://user:password@host/blurdetect`)
+
+### Step 2: Clone Repository
 ```bash
 git clone https://github.com/Aldwinzzz/BlurDetect.git
 cd BlurDetect
 ```
 
-### Step 2: Create Virtual Environment
+### Step 3: Create Virtual Environment
 ```bash
 python -m venv venv
 source venv/bin/activate  # On Windows: venv\Scripts\activate
 ```
 
-### Step 3: Install Dependencies
+### Step 4: Install Dependencies
 ```bash
 pip install -r requirements.txt
 ```
 
-### Step 4: Configure Environment
-Edit `.env` file with your Supabase credentials:
-```
-DATABASE_URL=postgresql://postgres:AldwinJohn231@db.vgstezkqpcqcoqbznzvg.supabase.co:5432/postgres
-MAIL_USERNAME=Mail
+### Step 5: Configure Environment
+Edit `.env` file with your Neon connection string:
+```env
+# Copy your actual connection string from Neon Console
+DATABASE_URL=postgresql://neon_user:password@ep-xyz.us-east-1.neon.tech/blurdetect
+
+# Email configuration (Gmail SMTP)
+MAIL_USERNAME=aldwin.hamilit44@gmail.com
 MAIL_PASSWORD=krvfmfxbtdopqjxj
 SECRET_KEY=AldwinJohn231
 FLASK_APP=app.py
 FLASK_ENV=development
 ```
 
-### Step 5: Initialize Database
+### Step 6: Initialize Database
 ```bash
 python init_db.py
 ```
 
-### Step 6: Run Application
+### Step 7: Run Application
 ```bash
 python app.py
 ```
 
 Visit `http://localhost:5000` in your browser.
+
+**For detailed setup instructions, see [NEON_SETUP.md](NEON_SETUP.md)**
 
 ## Usage Guide
 
